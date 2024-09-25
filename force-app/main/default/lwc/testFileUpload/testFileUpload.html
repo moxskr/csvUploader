@@ -1,0 +1,23 @@
+<template>
+
+    <lightning-card>
+
+        <lightning-layout>
+
+            <lightning-layout-item size="12" padding="horizontal-medium">
+
+                <c-file-upload-zone
+                    max-size="10485760"
+                    formats={fileFormats}
+                    onfileupload={handleFileUpload}
+                ></c-file-upload-zone>
+
+            </lightning-layout-item>
+
+        </lightning-layout>
+
+    </lightning-card>
+
+    
+    
+</template>
