@@ -1,0 +1,53 @@
+<template>
+	<lightning-card title="CSV Import">
+		<template lwc:if={displaySelectObjectForm}>
+			<lightning-layout multiple-rows>
+				<lightning-layout-item size="12" padding="horizontal-medium">
+					<lightning-combobox
+						options={sObjectListOptions}
+						label="Select object"
+						class="slds-var-m-bottom_medium"
+						onchange={handleObjectChange}
+						disabled={isSelectorObjectDisabled}
+						data-id="selectObject"
+					></lightning-combobox>
+				</lightning-layout-item>
+				<lightning-layout-item size="12" padding="horizontal-medium">
+					<lightning-button
+						label="Select"
+						variant="brand"
+						onclick={handleSelectObjectButtonClick}
+						data-id="selectObjectButton"
+					></lightning-button>
+				</lightning-layout-item>
+			</lightning-layout>
+		</template>
+        <template lwc:elseif={displayFileUploadZone}>
+            <lightning-layout>
+                <lightning-layout-item size="12" padding="horizontal-medium">
+                    <p><b>Object type:</b> {selectedObject}</p>
+                    <c-file-upload-zone
+                        formats={fileUploadFormats}
+						onfileupload={handleFileUpload}
+                    ></c-file-upload-zone>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+		<template lwc:elseif={displayFileInfo}>
+			<lightning-layout multiple-rows>
+                <lightning-layout-item size="12" padding="horizontal-medium">
+                    <c-file-info
+                        file={uploadedFile}
+                    ></c-file-info>
+                </lightning-layout-item>
+				<lightning-layout-item size="12" padding="horizontal-medium" class="slds-var-p-top_medium">
+					<lightning-button
+						label="Next"
+						variant="brand"
+						data-id="fileInfoNextButton"
+					></lightning-button>
+				</lightning-layout-item>
+            </lightning-layout>
+		</template>
+	</lightning-card>
+</template>

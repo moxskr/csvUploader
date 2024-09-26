@@ -1,4 +1,4 @@
-import { api, LightningElement } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class FileUploadZone extends LightningElement {
