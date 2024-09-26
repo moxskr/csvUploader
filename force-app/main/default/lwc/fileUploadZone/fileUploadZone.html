@@ -1,19 +1,29 @@
 <template>
-  <div class="drag-zone slds-var-p-around_medium" ondragover={handleFileDrag} ondrop={handleFileDrop} data-id="dragZone">
-    <lightning-layout multiple-rows>
-      <lightning-layout-item size="12">
-        <lightning-icon
-          icon-name="standard:file"
-          size="large"
-          class="slds-align_absolute-center"
-        ></lightning-icon>
-      </lightning-layout-item>
+	<div
+		class="drag-zone slds-var-p-around_medium"
+		ondragover={handleFileDrag}
+		ondrop={handleFileDrop}
+		data-id="dragZone"
+	>
+		<lightning-layout multiple-rows>
+			<lightning-layout-item size="12">
+				<lightning-icon
+					icon-name="standard:file"
+					size="large"
+					class="slds-align_absolute-center"
+				></lightning-icon>
+			</lightning-layout-item>
 
-      <lightning-layout-item size="12">
-        <div class="w-100 slds-align_absolute-center">
-          <lightning-input class="file-input" type="file" label="" onchange={handleFileInputChange}></lightning-input>
-        </div>
-      </lightning-layout-item>
-    </lightning-layout>
-  </div>
+			<lightning-layout-item size="12">
+				<div class="w-100 slds-align_absolute-center">
+					<lightning-input
+						class="file-input"
+						type="file"
+						label=""
+						onchange={handleFileInputChange}
+					></lightning-input>
+				</div>
+			</lightning-layout-item>
+		</lightning-layout>
+	</div>
 </template>
