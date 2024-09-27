@@ -15,4 +15,21 @@ public with sharing class CsvImportController {
 			throw new AuraHandledException(e.getMessage());
 		}
 	}
+
+	@AuraEnabled(cacheable=true)
+	public static List<String> getFieldsList(String sObjectName){
+		try {
+			List<SObjectField> fields = Schema.getGlobalDescribe().get(sObjectName).getDescribe().fields.getMap().values();
+			
+			List<String> fieldsApiNames = new List<String> ();
+
+			for(SObjectField field : fields) {
+				fieldsApiNames.add(field.getDescribe().getName());
+			}
+
+			return fieldsApiNames;
+		} catch (Exception e) {
+			throw new AuraHandledException(e.getMessage());
+		}
+	}
 }

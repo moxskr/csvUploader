@@ -5,7 +5,8 @@ import getSObjectList from '@salesforce/apex/CsvImportController.getSObjectList'
 const MODES = Object.freeze({
     SELECT_OBJECT: 'selectObject',
     UPLOAD_FILE: 'uploadFile',
-    FILE_INFO: 'fileInfo'
+    FILE_INFO: 'fileInfo',
+    MAPPING: 'mapping'
 });
 
 const FILE_FORMATS = ['text/csv'];
@@ -37,6 +38,10 @@ export default class CsvImport extends LightningElement {
         return this.mode === MODES.FILE_INFO;
     }
 
+    get displayMapping() {
+        return this.mode === MODES.MAPPING;
+    }
+
 	@wire(getSObjectList)
 	getSobjectList({ data, error }) {
 		if (data) {
@@ -46,7 +51,7 @@ export default class CsvImport extends LightningElement {
 		} else if (error) {
 			const toastEvent = new ShowToastEvent({
 				title: 'Error',
-				message: error,
+				message: error.message,
 				variant: 'error'
 			});
 
@@ -77,5 +82,9 @@ export default class CsvImport extends LightningElement {
     handleFileUpload(event) {
         this.uploadedFile = event.detail.file;
         this.mode = MODES.FILE_INFO;
+    }
+
+    handleFileInfoNextButton() {
+        this.mode = MODES.MAPPING;
     }
 }

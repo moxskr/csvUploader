@@ -17,6 +17,15 @@ jest.mock(
 const testSObjectList = ['Account', 'Case', 'Contact'];
 
 jest.mock('c/fileUploadZone');
+jest.mock('c/csvMapping', () => {
+    return {
+        default: jest.fn().mockImplementation(() => {
+            return {
+                getMapping: jest.fn(() => ['Id', 'Name', 'Description'])
+            };
+        }),
+    };
+});
 
 describe('c-csv-import', () => {
 	afterEach(() => {
@@ -88,6 +97,14 @@ describe('c-csv-import', () => {
 		const fileInfo = element.shadowRoot.querySelector('c-file-info');
 
 		expect(fileInfo).not.toBeNull();
+
+		const fileInfoNextButton = element.shadowRoot.querySelector('lightning-button[data-id=fileInfoNextButton]');
+
+		fileInfoNextButton.click();
+
+		const csvMapping = element.shadowRoot.querySelector('c-csv-mapping');
+
+		expect(csvMapping).not.toBeNull();
 	});
 });
 

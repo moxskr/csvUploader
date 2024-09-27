@@ -45,9 +45,20 @@
 						label="Next"
 						variant="brand"
 						data-id="fileInfoNextButton"
+						onclick={handleFileInfoNextButton}
 					></lightning-button>
 				</lightning-layout-item>
             </lightning-layout>
+		</template>
+		<template lwc:elseif={displayMapping}>
+			<lightning-layout multiple-rows>
+				<lightning-layout-item size="12" padding="horizontal-medium">
+					<c-csv-mapping
+						object-name={selectedObject}
+						uploaded-file={uploadedFile}
+					></c-csv-mapping>
+				</lightning-layout-item>	
+			</lightning-layout>
 		</template>
 	</lightning-card>
 </template>
