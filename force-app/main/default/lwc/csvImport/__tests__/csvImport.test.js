@@ -1,38 +1,33 @@
 import { createElement } from '@lwc/engine-dom';
 import CsvImport from 'c/csvImport';
-import getSObjectList from '@salesforce/apex/CsvImportController.getSObjectList';
 
-jest.mock(
-	'@salesforce/apex/CsvImportController.getSObjectList',
-	() => {
-		const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
+const TEST_FILE_CONTENT = 'id,name,desc\n1,test,qwerty';
 
-		return {
-			default: createApexTestWireAdapter()
-		};
-	},
-	{ virtual: true }
-);
+global.TextDecoder = jest.fn(() => ({
+	decode: jest.fn((buffer) => String.fromCharCode.apply(null, buffer))
+}));
 
-const testSObjectList = ['Account', 'Case', 'Contact'];
+global.File.prototype.stream = jest.fn(() => ({
+	getReader: jest.fn(() => ({
+		read: jest.fn(() =>
+			Promise.resolve({
+				done: false,
+				value: Uint8Array.from(
+					Array.from(TEST_FILE_CONTENT).map((letter) => letter.charCodeAt(0))
+				)
+			})
+		)
+	}))
+}));
 
-jest.mock('c/fileUploadZone');
-jest.mock('c/csvMapping', () => {
-    return {
-        default: jest.fn().mockImplementation(() => {
-            return {
-                getMapping: jest.fn(() => ['Id', 'Name', 'Description'])
-            };
-        }),
-    };
-});
+jest.mock('c/fileUploader');
+jest.mock('c/csvMapping');
 
 describe('c-csv-import', () => {
 	afterEach(() => {
 		while (document.body.firstChild) {
 			document.body.removeChild(document.body.firstChild);
 		}
-		jest.clearAllMocks();
 	});
 
 	it('test csv import component', async () => {
@@ -42,69 +37,44 @@ describe('c-csv-import', () => {
 
 		document.body.appendChild(element);
 
-		getSObjectList.emit(testSObjectList);
-
 		await flushPromises();
 
-		const objectSelector = element.shadowRoot.querySelector(
-			'lightning-combobox[data-id=selectObject]'
+		const fileUploader = element.shadowRoot.querySelector('c-file-uploader');
+
+		expect(fileUploader).not.toBeNull();
+
+		const testFile = createTestFile(TEST_FILE_CONTENT);
+
+		fileUploader.dispatchEvent(
+			new CustomEvent('filesupload', {
+				detail: {
+					files: [testFile]
+				}
+			})
 		);
-		const selectObjectButton = element.shadowRoot.querySelector(
-			'lightning-button[data-id=selectObjectButton]'
-		);
 
-		expect(objectSelector.options.length).toBe(testSObjectList.length);
-		expect(selectObjectButton).not.toBeNull();
-
-		const handler = jest.fn();
-
-		element.addEventListener('lightning__showtoast', handler);
-
-		selectObjectButton.click();
-
-		expect(handler).toHaveBeenCalledTimes(1);
-
-		const objectSelectEvent = new CustomEvent('change', {
-			detail: {
-				value: 'Account'
-			}
-		});
-
-		objectSelector.dispatchEvent(objectSelectEvent);
-
-		selectObjectButton.click();
-
+		//TODO: investigate problem
 		await flushPromises();
-
-		const fileUploadZone = element.shadowRoot.querySelector(
-			'c-file-upload-zone'
-		);
-
-		expect(fileUploadZone).not.toBeNull();
-
-		const testFile = createTestFile();
-		
-		const testUploadFileEvent = new CustomEvent('fileupload', {
-			detail: {
-				file: testFile
-			}
-		});
-
-		fileUploadZone.dispatchEvent(testUploadFileEvent);
-
 		await flushPromises();
-
-		const fileInfo = element.shadowRoot.querySelector('c-file-info');
-
-		expect(fileInfo).not.toBeNull();
-
-		const fileInfoNextButton = element.shadowRoot.querySelector('lightning-button[data-id=fileInfoNextButton]');
-
-		fileInfoNextButton.click();
+		await flushPromises();
 
 		const csvMapping = element.shadowRoot.querySelector('c-csv-mapping');
 
 		expect(csvMapping).not.toBeNull();
+
+		csvMapping.dispatchEvent(
+			new CustomEvent('submitmapping', {
+				detail: {
+					mapping: {
+						id: 'Id',
+						name: 'Name',
+						desc: 'Description'
+					}
+				}
+			})
+		);
+
+		await flushPromises();
 	});
 });
 
@@ -117,4 +87,3 @@ function createTestFile(content = 'test', format = 'text/csv') {
 
 	return file;
 }
-

@@ -5,31 +5,20 @@
 		</lightning-layout-item>
 
 		<lightning-layout-item size="12">
-			<template for:each={headers} for:item="header">
-				<lightning-layout
-					class="slds-var-p-top_small slds-var-p-bottom_small"
-					key={header}
-					for:index="index"
-				>
-					<lightning-layout-item size="6" class="slds-var-p-right_small">
-						<lightning-input
-							label="File header field"
-							value={header}
-							disabled
-						></lightning-input>
-					</lightning-layout-item>
+			<lightning-combobox
+				label="Select object"
+				options={sObjectOptions}
+				onchange={handleObjectSelectorChange}
+				disabled={isSObjectSelectorDisabled}
+				data-id="objectSelector"
+			></lightning-combobox>
+		</lightning-layout-item>
 
-					<lightning-layout-item size="6" class="slds-var-p-left_small">
-						<lightning-combobox
-							label="Select field"
-							options={fieldsOptions}
-							data-header={header}
-							onchange={handleSelectedField}
-							disabled={isFieldsSelectorsDisabled}
-						></lightning-combobox>
-					</lightning-layout-item>
-				</lightning-layout>
-			</template>
+		<lightning-layout-item size="12" lwc:if={selectedSObject}>
+			<c-csv-mapping-selectors
+				object-name={selectedSObject}
+				mapping-fields={mappingFields}
+			></c-csv-mapping-selectors>
 		</lightning-layout-item>
 	</lightning-layout>
 </template>

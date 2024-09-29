@@ -1,90 +1,52 @@
-import { LightningElement, wire } from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getSObjectList from '@salesforce/apex/CsvImportController.getSObjectList';
+import { LightningElement } from 'lwc';
 
 const MODES = Object.freeze({
-    SELECT_OBJECT: 'selectObject',
-    UPLOAD_FILE: 'uploadFile',
-    FILE_INFO: 'fileInfo',
-    MAPPING: 'mapping'
+	UPLOAD_FILE: 'uploadFile',
+	MAPPING: 'mapping'
 });
 
 const FILE_FORMATS = ['text/csv'];
 
 export default class CsvImport extends LightningElement {
-	sObjectListOptions;
+	mode = MODES.UPLOAD_FILE;
 
-    selectedObject;
+	fileUploadFormats = FILE_FORMATS;
 
-    mode = MODES.SELECT_OBJECT;
+	uploadedFile;
 
-    fileUploadFormats = FILE_FORMATS;
+	mappingFields = [];
 
-    uploadedFile;
-
-    get isSelectorObjectDisabled() {
-        return !this.sObjectListOptions;
-    }
-
-    get displaySelectObjectForm() {
-        return this.mode === MODES.SELECT_OBJECT;
-    }
-
-    get displayFileUploadZone() {
-        return this.mode === MODES.UPLOAD_FILE;
-    }
-
-    get displayFileInfo() {
-        return this.mode === MODES.FILE_INFO;
-    }
-
-    get displayMapping() {
-        return this.mode === MODES.MAPPING;
-    }
-
-	@wire(getSObjectList)
-	getSobjectList({ data, error }) {
-		if (data) {
-			this.sObjectListOptions = data.map((item) => {
-				return { label: item, value: item };
-			});
-		} else if (error) {
-			const toastEvent = new ShowToastEvent({
-				title: 'Error',
-				message: error.message,
-				variant: 'error'
-			});
-
-			this.dispatchEvent(toastEvent);
-		}
+	get displayFileUpload() {
+		return this.mode === MODES.UPLOAD_FILE;
 	}
 
-    handleObjectChange(event) {
-        const {value} = event.detail;
+	get displayMapping() {
+		return this.mode === MODES.MAPPING;
+	}
 
-        this.selectedObject = value;
-    }
-    
-    handleSelectObjectButtonClick() {
-        if(this.selectedObject) {
-            this.mode = MODES.UPLOAD_FILE;
-        } else {
-            const toastEvent = new ShowToastEvent({
-                title: 'Error',
-                message: 'Select an object',
-                variant: 'error'
-            });
+	async handleFilesUpload(event) {
+		const [file] = event.detail.files;
 
-            this.dispatchEvent(toastEvent);
-        }
-    }
+		await this.setMappingFields(file);
 
-    handleFileUpload(event) {
-        this.uploadedFile = event.detail.file;
-        this.mode = MODES.FILE_INFO;
-    }
+		this.uploadedFile = file;
+		this.mode = MODES.MAPPING;
+	}
 
-    handleFileInfoNextButton() {
-        this.mode = MODES.MAPPING;
+	async setMappingFields(file) {
+		const reader = file.stream().getReader();
+		const decoder = new TextDecoder('utf-8');
+
+		const { value } = await reader.read();
+
+		const decodedValue = decoder.decode(value);
+
+		this.mappingFields = decodedValue.split('\n').shift().split(',');
+	}
+
+    handleSubmitMapping(event) {
+        event.stopPropagation();
+        console.log(event.detail.mapping)
+        console.log(this.uploadedFile)
     }
 }

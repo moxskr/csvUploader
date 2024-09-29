@@ -1,0 +1,35 @@
+<template>
+	<lightning-layout multiple-rows>
+		<template for:each={mappingFields} for:item="mappingField">
+			<lightning-layout-item size="12" key={mappingField}>
+				<lightning-layout>
+					<lightning-layout-item size="6" class="slds-var-p-right_small">
+						<lightning-input
+							label="File header field"
+							value={mappingField}
+							disabled="true"
+						></lightning-input>
+					</lightning-layout-item>
+					<lightning-layout-item size="6" class="slds-var-p-left_small">
+						<lightning-combobox
+							options={fieldsOptions}
+							label="Select object field"
+							disabled={areSelectorsDisabled}
+							onchange={handleSelectorChange}
+							data-field={mappingField}
+						></lightning-combobox>
+					</lightning-layout-item>
+				</lightning-layout>
+			</lightning-layout-item>
+		</template>
+
+		<lightning-layout-item size="12" class="slds-var-p-top_medium"> 
+            <lightning-button
+                label="Submit"
+                data-id="submitButton"
+				variant="brand"
+                onclick={handleSubmit}
+            ></lightning-button>
+        </lightning-layout-item>
+	</lightning-layout>
+</template>

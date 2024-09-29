@@ -1,22 +1,11 @@
 import { createElement } from '@lwc/engine-dom';
 import CsvMapping from 'c/csvMapping';
-import getFieldsList from '@salesforce/apex/CsvImportController.getFieldsList';
+import getSObjectList from '@salesforce/apex/CsvImportController.getSObjectList';
 
-const TEST_FILE_CONTENT = 'id,name,desc\n1,test,qwerty';
-
-global.TextDecoder = jest.fn(() => ({
-    decode: jest.fn((buffer) => String.fromCharCode.apply(null, buffer)),
-}));
-
-global.File.prototype.stream = jest.fn(() => ({
-    getReader: jest.fn(() => ({
-        read: jest.fn(() => Promise.resolve({ done: false, value: Uint8Array.from(Array.from(TEST_FILE_CONTENT).map(letter => letter.charCodeAt(0)))})), // "test"
-        releaseLock: jest.fn(),
-    })),
-}));
+jest.mock('c/csvMappingSelectors');
 
 jest.mock(
-	'@salesforce/apex/CsvImportController.getFieldsList',
+	'@salesforce/apex/CsvImportController.getSObjectList',
 	() => {
 		const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
 
@@ -27,71 +16,63 @@ jest.mock(
 	{ virtual: true }
 );
 
-const TEST_FIELDS = ['Id', 'Name', 'Description'];
+const TEST_OBJECTS = ['Account', 'Contact', 'Case'];
+const MAPPING_FIELDS = ['id', 'name', 'desc'];
 
 describe('c-csv-mapping', () => {
-    afterEach(() => {
-        while (document.body.firstChild) {
-            document.body.removeChild(document.body.firstChild);
-        }
-    });
+	afterEach(() => {
+		while (document.body.firstChild) {
+			document.body.removeChild(document.body.firstChild);
+		}
+	});
 
-    it('test csv mapping component', async () => {
-        const element = createElement('c-csv-mapping', {
-            is: CsvMapping
-        });
+	it('test csv mapping component', async () => {
+		const element = createElement('c-csv-mapping', {
+			is: CsvMapping
+		});
 
-        const testFile = createTestFile(TEST_FILE_CONTENT);
+		element.mappingFields = MAPPING_FIELDS;
 
-        element.objectName = 'Account';
-        element.uploadedFile = testFile;
+		document.body.appendChild(element);
 
-        document.body.appendChild(element);
+		getSObjectList.emit(TEST_OBJECTS);
 
-        getFieldsList.emit(TEST_FIELDS);
+		const sObjectSelector = element.shadowRoot.querySelector(
+			'lightning-combobox[data-id=objectSelector]'
+		);
 
-        await flushPromises();
+		sObjectSelector.dispatchEvent(
+			new CustomEvent('change', {
+				detail: {
+					value: 'Account'
+				}
+			})
+		);
 
-        const mappingSelectors = element.shadowRoot.querySelectorAll('lightning-combobox');
+		await flushPromises();
 
-        expect(mappingSelectors.length).toBe(3);
-        expect(mappingSelectors[0].options.length).toBe(TEST_FIELDS.length)
+		const csvMappingSelectors = element.shadowRoot.querySelector('c-csv-mapping-selectors');
 
-        const handler = jest.fn();
+		expect(csvMappingSelectors).not.toBeNull();
 
-        element.addEventListener('lightning__showtoast', handler);
+		const handler = jest.fn();
 
-        let mapping = element.getMapping();
+		element.addEventListener('submitmapping', handler);
 
-        await flushPromises();
-
-        expect(mapping).toBeNull();
-        expect(handler).toHaveBeenCalled();
-
-        for (let i = 0; i < 3; i++) {
-            const mappingSelectorEvent = new CustomEvent('change', {
-                detail: {
-                    value: TEST_FIELDS[i]
+		csvMappingSelectors.dispatchEvent(
+			new CustomEvent('submitmapping', {
+				detail: {
+                    mapping: {
+                        'id': 'Id',
+                        'name': 'Name',
+                        'desc': 'Description'
+                    }
                 }
-            });
-
-            mappingSelectors[i].dispatchEvent(mappingSelectorEvent);
-        }
-
-        await flushPromises();
-
-        mapping = element.getMapping();
-
-        expect(mapping.length).toBe(3);
-    });
+			})
+		);
+	});
 });
 
 function flushPromises() {
-    return new Promise(process.nextTick);
-}
-
-function createTestFile(content = 'test', format = 'text/csv') {
-	const file = new File([content], 'test.csv', { type: format });
-
-	return file;
+	return new Promise(process.nextTick);
 }

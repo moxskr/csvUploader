@@ -1,0 +1,32 @@
+<template>
+	<lightning-layout multiple-rows>
+		<lightning-layout-item size="12">
+			<c-file-upload-zone
+				max-size={maxSize}
+				formats={formats}
+				onfileupload={handleFileUpload}
+			></c-file-upload-zone>
+		</lightning-layout-item>
+
+		<lightning-layout-item size="12">
+			<template for:each={files} for:item="file">
+				<div
+					key={file.name}
+					class="slds-border_bottom slds-var-p-top_medium slds-var-p-bottom_medium"
+				>
+					<c-file-info file={file}></c-file-info>
+				</div>
+			</template>
+		</lightning-layout-item>
+
+		<lightning-layout-item size="12" class="slds-var-p-top_medium">
+			<lightning-button
+				lwc:if={showSubmitFile}
+				label="Submit"
+				data-id="submitButton"
+				variant="brand"
+				onclick={handleSubmit}
+			></lightning-button>
+		</lightning-layout-item>
+	</lightning-layout>
+</template>
