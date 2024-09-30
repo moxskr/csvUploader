@@ -74,6 +74,20 @@ describe('c-csv-mapping-selectors', () => {
 		});
 
 		submitButton.click();
+
+		element.objectName = 'Contact';
+
+		getFieldsList.emit(OBJECT_FIELDS);
+
+		await flushPromises();
+
+		const handler = jest.fn();
+
+		element.addEventListener('lightning__showtoast', handler);
+
+		submitButton.click();
+
+		expect(handler).toHaveBeenCalled();
 	});
 });
 
