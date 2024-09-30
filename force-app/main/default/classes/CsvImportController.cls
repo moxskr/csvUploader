@@ -17,13 +17,17 @@ public with sharing class CsvImportController {
 	}
 
 	@AuraEnabled(cacheable=true)
-	public static List<String> getFieldsList(String sObjectName){
+	public static List<String> getFieldsList(String sObjectName) {
 		try {
-			List<SObjectField> fields = Schema.getGlobalDescribe().get(sObjectName).getDescribe().fields.getMap().values();
-			
-			List<String> fieldsApiNames = new List<String> ();
+			List<SObjectField> fields = Schema.getGlobalDescribe()
+				.get(sObjectName)
+				.getDescribe()
+				.fields.getMap()
+				.values();
 
-			for(SObjectField field : fields) {
+			List<String> fieldsApiNames = new List<String>();
+
+			for (SObjectField field : fields) {
 				fieldsApiNames.add(field.getDescribe().getName());
 			}
 

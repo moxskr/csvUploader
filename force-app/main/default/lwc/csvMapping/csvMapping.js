@@ -17,7 +17,7 @@ export default class CsvMapping extends LightningElement {
 	@wire(getSObjectList)
 	getSObjectList({ data, error }) {
 		if (data) {
-			this.sObjectOptions = data.map(item => ({
+			this.sObjectOptions = data.map((item) => ({
 				label: item,
 				value: item
 			}));

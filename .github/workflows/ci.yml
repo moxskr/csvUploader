@@ -7,61 +7,61 @@ jobs:
     js-pipeline:
         runs-on: ubuntu-latest
         steps:
-            - name: "Checkout source code"
+            - name: 'Checkout source code'
               uses: actions/checkout@v3
 
-            - name: "Install Volta"
+            - name: 'Install Volta'
               uses: volta-cli/action@v4
 
-            - name: "Restore node_modules cache"
+            - name: 'Restore node_modules cache'
               id: cache-npm
               uses: actions/cache@v3
               with:
-                path: node_modules
-                key: npm-${{ hashFiles('**/package-lock.json') }}
-                restore-keys: |
-                    npm-${{ env.cache-name }}-
-                    npm-
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
 
-            - name: "Install npm dependencies"
+            - name: 'Install npm dependencies'
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
-            - name: "Run LWC tests"
+            - name: 'Run LWC tests'
               run: npm run test:unit:coverage
 
-            - name: "Run ESLint"
+            - name: 'Run ESLint'
               run: npm run lint
 
-            - name: "Run Prettier Verify"
+            - name: 'Run Prettier Verify'
               run: npm run prettier:verify
-    
+
     apex-pipeline:
         runs-on: ubuntu-latest
         if: ${{ github.actor != 'dependabot[bot]' }}
         steps:
-            - name: "Checkout source code"
+            - name: 'Checkout source code'
               uses: actions/checkout@v3
 
-            - name: "Install Salesforce CLI"
+            - name: 'Install Salesforce CLI'
               run: |
-                npm install @salesforce/cli --location=global
-                nodeInstallPath=$(npm config get prefix)
-                echo "$nodeInstallPath/bin" >> $GITHUB_PATH
-                sf --version
+                  npm install @salesforce/cli --location=global
+                  nodeInstallPath=$(npm config get prefix)
+                  echo "$nodeInstallPath/bin" >> $GITHUB_PATH
+                  sf --version
 
-            - name: "Authenticate Dev Hub"
+            - name: 'Authenticate Dev Hub'
               run: sf org login jwt --client-id ${{ secrets.SF_CLIENT_ID }} --jwt-key-file ./assets/server.key --username ${{ secrets.SF_USERNAME }} --alias ci-dev-hub --set-default-dev-hub
-  
-            - name: "Create scratch org"
+
+            - name: 'Create scratch org'
               run: sf org create scratch -f config/project-scratch-def.json -a scratch-org -d -y 1
 
-            - name: "Push source to scratch org"
+            - name: 'Push source to scratch org'
               run: sf project deploy start
 
-            - name: "Run Apex tests"
+            - name: 'Run Apex tests'
               run: sf apex test run -c -r human -d ./tests/apex -w 20
 
-            - name: "Delete scratch org"
+            - name: 'Delete scratch org'
               if: always()
               run: sf org delete scratch -p -o scratch-org

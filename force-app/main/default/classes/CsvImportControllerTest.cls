@@ -19,7 +19,7 @@ private class CsvImportControllerTest {
 			Set<String> fields = Account.SObjectType.getDescribe().fields.getMap().keySet();
 
 			Test.startTest();
-			
+
 			List<String> resultFields = CsvImportController.getFieldsList('Account');
 
 			Test.stopTest();

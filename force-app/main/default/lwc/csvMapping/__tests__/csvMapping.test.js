@@ -62,12 +62,12 @@ describe('c-csv-mapping', () => {
 		csvMappingSelectors.dispatchEvent(
 			new CustomEvent('submitmapping', {
 				detail: {
-                    mapping: {
-                        'id': 'Id',
-                        'name': 'Name',
-                        'desc': 'Description'
-                    }
-                }
+					mapping: {
+						id: 'Id',
+						name: 'Name',
+						desc: 'Description'
+					}
+				}
 			})
 		);
 	});

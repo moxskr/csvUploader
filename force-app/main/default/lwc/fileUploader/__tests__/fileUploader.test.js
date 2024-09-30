@@ -51,23 +51,23 @@ describe('c-file-uploader', () => {
 		element.addEventListener('filesupload', (event) => {
 			const { files } = event.detail;
 
-            expect(files.length).toBe(1);
-            expect(files[0].name).toBe(testFile2.name);
-            expect(files[0].size).toBe(testFile2.size);
-            expect(files[0].type).toBe(testFile2.type);
+			expect(files.length).toBe(1);
+			expect(files[0].name).toBe(testFile2.name);
+			expect(files[0].size).toBe(testFile2.size);
+			expect(files[0].type).toBe(testFile2.type);
 		});
 
 		submitButton.click();
 	});
 
-    it('test file uploader multiple mode', async () => {
+	it('test file uploader multiple mode', async () => {
 		const element = createElement('c-file-uploader', {
 			is: FileUploader
 		});
 
 		element.maxSize = 3 * 1024 * 1024;
 		element.formats = ['text/csv'];
-        element.allowMultiple = true;
+		element.allowMultiple = true;
 
 		document.body.appendChild(element);
 
@@ -102,15 +102,15 @@ describe('c-file-uploader', () => {
 		element.addEventListener('filesupload', (event) => {
 			const { files } = event.detail;
 
-            expect(files.length).toBe(2);
+			expect(files.length).toBe(2);
 
-            expect(files[0].name).toBe(testFile.name);
-            expect(files[0].size).toBe(testFile.size);
-            expect(files[0].type).toBe(testFile.type);
+			expect(files[0].name).toBe(testFile.name);
+			expect(files[0].size).toBe(testFile.size);
+			expect(files[0].type).toBe(testFile.type);
 
-            expect(files[1].name).toBe(testFile2.name);
-            expect(files[1].size).toBe(testFile2.size);
-            expect(files[1].type).toBe(testFile2.type);
+			expect(files[1].name).toBe(testFile2.name);
+			expect(files[1].size).toBe(testFile2.size);
+			expect(files[1].type).toBe(testFile2.type);
 		});
 
 		submitButton.click();

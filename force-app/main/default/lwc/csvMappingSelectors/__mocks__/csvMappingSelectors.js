@@ -1,8 +1,8 @@
-import { api, LightningElement } from "lwc";
+import { api, LightningElement } from 'lwc';
 
 export default class CsvMappingSelectors extends LightningElement {
-    @api
-    mappingFields;
-    @api
-    objectName;
+	@api
+	mappingFields;
+	@api
+	objectName;
 }

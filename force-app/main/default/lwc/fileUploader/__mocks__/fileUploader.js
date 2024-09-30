@@ -1,12 +1,12 @@
-import { LightningElement, api } from "lwc";
+import { LightningElement, api } from 'lwc';
 
 export default class FileUploader extends LightningElement {
-    @api
-    formats;
+	@api
+	formats;
 
-    @api
-    maxSize;
+	@api
+	maxSize;
 
-    @api
-    allowMultiple;
+	@api
+	allowMultiple;
 }

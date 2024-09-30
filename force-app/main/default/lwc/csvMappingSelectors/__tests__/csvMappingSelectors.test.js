@@ -62,15 +62,15 @@ describe('c-csv-mapping-selectors', () => {
 		element.addEventListener('submitmapping', (event) => {
 			let { mapping } = event.detail;
 
-            let expectedObject = {};
+			let expectedObject = {};
 
-			for(let i = 0; i < MAPPING_FIELDS.length; i++) {
+			for (let i = 0; i < MAPPING_FIELDS.length; i++) {
 				expectedObject[MAPPING_FIELDS[i]] = OBJECT_FIELDS[i];
 			}
 
-            for (let mappingField of Object.keys(mapping)) {
-                expect(mapping[mappingField]).toBe(expectedObject[mappingField]);
-            } 
+			for (let mappingField of Object.keys(mapping)) {
+				expect(mapping[mappingField]).toBe(expectedObject[mappingField]);
+			}
 		});
 
 		submitButton.click();

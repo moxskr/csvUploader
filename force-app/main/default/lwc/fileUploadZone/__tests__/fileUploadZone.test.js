@@ -23,9 +23,7 @@ describe('c-file-upload-zone', () => {
 
 		element.addEventListener('fileupload', handler);
 
-		const dragZone = element.shadowRoot.querySelector(
-			'div[data-id=dragZone'
-		);
+		const dragZone = element.shadowRoot.querySelector('div[data-id=dragZone');
 
 		const testFile = createTestFile();
 
@@ -100,10 +98,7 @@ describe('c-file-upload-zone', () => {
 			is: FileUploadZone
 		});
 
-		const largePlainFile = createTestFile(
-			'test123123qweqweqwe',
-			'text/plain'
-		);
+		const largePlainFile = createTestFile('test123123qweqweqwe', 'text/plain');
 		const smallCsvFile = createTestFile('test', 'text/csv');
 
 		element.maxSize = 10;
@@ -117,9 +112,7 @@ describe('c-file-upload-zone', () => {
 		element.addEventListener('fileupload', fileUploadHandler);
 		element.addEventListener('lightning__showtoast', showToastHandler);
 
-		const dragZone = element.shadowRoot.querySelector(
-			'div[data-id=dragZone'
-		);
+		const dragZone = element.shadowRoot.querySelector('div[data-id=dragZone');
 
 		const dropEventLarge = new CustomEvent('drop');
 

@@ -22,13 +22,13 @@ export default class FileUploader extends LightningElement {
 		this.files = this.allowMultiple ? [...this.files, file] : [file];
 	}
 
-    handleSubmit() {
-        const submitEvent = new CustomEvent('filesupload', {
-            detail: {
-                files: this.files
-            }
-        });
+	handleSubmit() {
+		const submitEvent = new CustomEvent('filesupload', {
+			detail: {
+				files: this.files
+			}
+		});
 
-        this.dispatchEvent(submitEvent);
-    }
+		this.dispatchEvent(submitEvent);
+	}
 }

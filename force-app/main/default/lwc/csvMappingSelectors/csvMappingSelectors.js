@@ -12,11 +12,11 @@ export default class CsvMappingSelectors extends LightningElement {
 
 	fieldsOptions = [];
 
-    mapping = {};
+	mapping = {};
 
-    get areSelectorsDisabled() {
-        return !this.fieldsOptions.length;
-    }
+	get areSelectorsDisabled() {
+		return !this.fieldsOptions.length;
+	}
 
 	@wire(getFieldsList, { sObjectName: '$objectName' })
 	getFieldsOptions({ data, error }) {
@@ -39,34 +39,34 @@ export default class CsvMappingSelectors extends LightningElement {
 	handleSelectorChange(event) {
 		const { field } = event.target.dataset;
 
-        this.mapping[field] = event.detail.value;
+		this.mapping[field] = event.detail.value;
 	}
 
-    handleSubmit() {
-        const isValid = this.validateMapping();
+	handleSubmit() {
+		const isValid = this.validateMapping();
 
-        if(isValid) {
-            const submitEvent = new CustomEvent('submitmapping', {
-                composed: true,
-                bubbles: true,
-                detail: {
-                    mapping: this.mapping
-                }
-            });
+		if (isValid) {
+			const submitEvent = new CustomEvent('submitmapping', {
+				composed: true,
+				bubbles: true,
+				detail: {
+					mapping: this.mapping
+				}
+			});
 
-            this.dispatchEvent(submitEvent);
-        } else {
-            this.dispatchEvent(
+			this.dispatchEvent(submitEvent);
+		} else {
+			this.dispatchEvent(
 				new ShowToastEvent({
 					title: 'Error',
 					message: 'Please select object field for each file header fields',
 					variant: 'error'
 				})
 			);
-        }
-    }
+		}
+	}
 
-    validateMapping() {
-        return Object.keys(this.mapping).length === this.mappingFields.length;
-    }
+	validateMapping() {
+		return Object.keys(this.mapping).length === this.mappingFields.length;
+	}
 }

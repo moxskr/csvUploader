@@ -44,9 +44,9 @@ export default class CsvImport extends LightningElement {
 		this.mappingFields = decodedValue.split('\n').shift().split(',');
 	}
 
-    handleSubmitMapping(event) {
-        event.stopPropagation();
-        console.log(event.detail.mapping)
-        console.log(this.uploadedFile)
-    }
+	handleSubmitMapping(event) {
+		event.stopPropagation();
+		console.log(event.detail.mapping);
+		console.log(this.uploadedFile);
+	}
 }
