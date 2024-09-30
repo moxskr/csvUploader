@@ -71,7 +71,6 @@ describe('c-csv-mapping', () => {
 			})
 		);
 	});
-	
 });
 
 function flushPromises() {
