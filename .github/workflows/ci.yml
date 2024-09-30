@@ -29,6 +29,12 @@ jobs:
 
             - name: "Run LWC tests"
               run: npm run test:unit:coverage
+
+            - name: "Run ESLint"
+              run: npm run lint
+
+            - name: "Run Prettier Verify"
+              run: npm run prettier:verify
     
     apex-pipeline:
         runs-on: ubuntu-latest
