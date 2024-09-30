@@ -25,6 +25,7 @@ export default class CsvMappingSelectors extends LightningElement {
 				label: item,
 				value: item
 			}));
+			this.mapping = {};
 		} else if (error) {
 			this.dispatchEvent(
 				new ShowToastEvent({
