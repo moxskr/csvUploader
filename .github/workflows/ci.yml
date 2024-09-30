@@ -4,34 +4,39 @@ on:
         types: [opened, edited, synchronize]
 
 jobs:
-    lwc-tests:
+    setup-env:
         runs-on: ubuntu-latest
         steps:
-            - name: "Checkout source code"
+            - name: 'Checkout source code'
               uses: actions/checkout@v3
 
-            - name: "Install Volta"
+            - name: 'Install Volta'
               uses: volta-cli/action@v4
 
-            - name: "Restore node_modules cache"
+            - name: 'Restore node_modules cache'
               id: cache-npm
               uses: actions/cache@v3
               with:
-                path: node_modules
-                key: npm-${{ hashFiles('**/package-lock.json') }}
-                restore-keys: |
-                    npm-${{ env.cache-name }}-
-                    npm-
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
 
-            - name: "Install npm dependencies"
+            - name: 'Install npm dependencies'
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
-            
-            - name: "Run eslint"
+
+    js-lint:
+        runs-on: ubuntu-latest
+        needs: setup-env
+        steps:
+            - name: 'Run ESLint'
               run: npm run lint
 
-            - name: "Run LWC tests"
+    lwc-tests:
+        runs-on: ubuntu-latest
+        needs: setup-env
+        steps:
+            - name: 'Run LWC tests'
               run: npm run test:unit:coverage
-    
-    
-    
