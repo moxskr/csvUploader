@@ -25,6 +25,9 @@ export default class CsvMappingSelectors extends LightningElement {
 				label: item,
 				value: item
 			}));
+			
+			this.resetSelectorsValue();
+
 			this.mapping = {};
 		} else if (error) {
 			this.dispatchEvent(
@@ -34,6 +37,12 @@ export default class CsvMappingSelectors extends LightningElement {
 					variant: 'error'
 				})
 			);
+		}
+	}
+
+	resetSelectorsValue() {
+		for(let selector of this.template.querySelectorAll('lightning-combobox')) {
+			selector.value = undefined;
 		}
 	}
 
