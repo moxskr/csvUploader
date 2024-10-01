@@ -67,8 +67,6 @@ describe('c-csv-import', () => {
 
 		//TODO: investigate problem
 		await flushPromises();
-		await flushPromises();
-		await flushPromises();
 
 		const csvMapping = element.shadowRoot.querySelector('c-csv-mapping');
 
@@ -87,15 +85,13 @@ describe('c-csv-import', () => {
 		);
 
 		await flushPromises();
-		await flushPromises();
-		await flushPromises();
 
 		expect(importRecords).toHaveBeenCalled();
 	});
 });
 
 function flushPromises() {
-	return Promise.resolve(process.nextTick);
+	return new Promise(process.nextTick);
 }
 
 function createTestFile(content = 'test', format = 'text/csv') {
