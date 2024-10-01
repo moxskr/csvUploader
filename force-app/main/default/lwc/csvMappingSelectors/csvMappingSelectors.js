@@ -25,7 +25,7 @@ export default class CsvMappingSelectors extends LightningElement {
 				label: item,
 				value: item
 			}));
-			
+
 			this.resetSelectorsValue();
 
 			this.mapping = {};
@@ -41,7 +41,7 @@ export default class CsvMappingSelectors extends LightningElement {
 	}
 
 	resetSelectorsValue() {
-		for(let selector of this.template.querySelectorAll('lightning-combobox')) {
+		for (let selector of this.template.querySelectorAll('lightning-combobox')) {
 			selector.value = undefined;
 		}
 	}

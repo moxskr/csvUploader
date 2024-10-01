@@ -40,7 +40,11 @@ public with sharing class CsvImportController {
 	}
 
 	@AuraEnabled
-	public static void importRecords(Map<String, String> mapping, String encodedCsv, String objectName){
+	public static void importRecords(
+		Map<String, String> mapping,
+		String encodedCsv,
+		String objectName
+	) {
 		try {
 			String decodedCsv = EncodingUtil.base64Decode(encodedCsv).toString();
 

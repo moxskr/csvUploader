@@ -17,25 +17,25 @@ public without sharing class CsvImportBatch implements Database.Batchable<String
 	public void execute(Database.BatchableContext BC, List<String> rows) {
 		Schema.SObjectType sObjectType = Schema.getGlobalDescribe().get(this.objectName);
 
-        List<SObject> records = new List<SObject> ();
+		List<SObject> records = new List<SObject>();
 
-        if(sObjectType != null) {
-            for(String row : rows) {
-                SObject record = sObjectType.newSObject();
+		if (sObjectType != null) {
+			for (String row : rows) {
+				SObject record = sObjectType.newSObject();
 
-                List<String> values = row.split(',');
-                
-                for(Integer i = 0; i < values.size(); i++) {
-                    String value = values[i];
-                    String header = this.headers[i];
-                    record.put(header, value);
-                }
+				List<String> values = row.split(',');
 
-                records.add(record);
-            }
-        }
-        
-        insert records;
+				for (Integer i = 0; i < values.size(); i++) {
+					String value = values[i];
+					String header = this.headers[i];
+					record.put(header, value);
+				}
+
+				records.add(record);
+			}
+		}
+
+		insert records;
 	}
 
 	public void finish(Database.BatchableContext BC) {

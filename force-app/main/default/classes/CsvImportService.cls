@@ -6,7 +6,7 @@ public with sharing class CsvImportService {
 
 		List<String> mappingHeaders = this.getMappingHeaders(csvHeaders, mapping);
 
-        this.startBatch(mappingHeaders, csvRows, objectName);
+		this.startBatch(mappingHeaders, csvRows, objectName);
 	}
 
 	public List<String> splitCsvRows(String csv) {
