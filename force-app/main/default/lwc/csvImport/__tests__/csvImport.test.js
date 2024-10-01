@@ -1,6 +1,8 @@
 import { createElement } from '@lwc/engine-dom';
 import CsvImport from 'c/csvImport';
 
+import importRecords from '@salesforce/apex/CsvImportController.importRecords';
+
 const TEST_FILE_CONTENT = 'id,name,desc\n1,test,qwerty';
 
 global.TextDecoder = jest.fn(() => ({
@@ -20,6 +22,14 @@ global.File.prototype.stream = jest.fn(() => ({
 	}))
 }));
 
+jest.mock(
+	'@salesforce/apex/CsvImportController.importRecords',
+	() => ({
+		default: jest.fn()
+	}),
+	{ virtual: true }
+);
+
 jest.mock('c/fileUploader');
 jest.mock('c/csvMapping');
 
@@ -31,6 +41,8 @@ describe('c-csv-import', () => {
 	});
 
 	it('test csv import component', async () => {
+		importRecords.mockResolvedValue();
+
 		const element = createElement('c-csv-import', {
 			is: CsvImport
 		});
@@ -75,6 +87,10 @@ describe('c-csv-import', () => {
 		);
 
 		await flushPromises();
+		await flushPromises();
+		await flushPromises();
+
+		expect(importRecords).toHaveBeenCalled();
 	});
 });
 

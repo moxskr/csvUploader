@@ -1,4 +1,6 @@
 import { LightningElement } from 'lwc';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import importRecords from '@salesforce/apex/CsvImportController.importRecords';
 
 const MODES = Object.freeze({
 	UPLOAD_FILE: 'uploadFile',
@@ -10,6 +12,7 @@ const FILE_FORMATS = ['text/csv'];
 export default class CsvImport extends LightningElement {
 	mode = MODES.UPLOAD_FILE;
 
+	maxSize = 10 * 1024;
 	fileUploadFormats = FILE_FORMATS;
 
 	uploadedFile;
@@ -44,9 +47,50 @@ export default class CsvImport extends LightningElement {
 		this.mappingFields = decodedValue.split('\n').shift().split(',');
 	}
 
-	handleSubmitMapping(event) {
+	async handleSubmitMapping(event) {
 		event.stopPropagation();
-		console.log(event.detail.mapping);
-		console.log(this.uploadedFile);
+
+		const { objectName, mapping } = event.detail;
+
+		const encodedCsv = await this.encodeFile(this.uploadedFile);
+
+		try {
+			await importRecords({
+				encodedCsv,
+				objectName,
+				mapping
+			});
+
+			this.dispatchEvent(
+				new ShowToastEvent({
+					title: 'Success',
+					message: 'Records imported successfully',
+					variant: 'success'
+				})
+			);
+
+			this.resetState();
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	async encodeFile(file) {
+		const reader = file.stream().getReader();
+
+		const { value } = await reader.read();
+
+		let binaryString = '';
+
+		for (let i = 0; i < value.length; i++) {
+			binaryString += String.fromCharCode(value[i]);
+		}
+
+		return btoa(binaryString);
+	}
+
+	resetState() {
+		this.mode = MODES.uploadedFile;
+		this.uploadedFile = undefined;
 	}
 }

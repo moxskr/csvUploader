@@ -1,1 +1,1 @@
-SELECT Id, Name, Description FROM Account
+SELECT Id, CaseNumber, Description FROM Case

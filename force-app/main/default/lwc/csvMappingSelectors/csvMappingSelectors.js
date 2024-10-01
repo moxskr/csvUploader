@@ -60,7 +60,8 @@ export default class CsvMappingSelectors extends LightningElement {
 				composed: true,
 				bubbles: true,
 				detail: {
-					mapping: this.mapping
+					mapping: this.mapping,
+					objectName: this.objectName
 				}
 			});
 

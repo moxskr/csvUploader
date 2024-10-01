@@ -4,6 +4,7 @@
 			<lightning-layout-item size="12" padding="horizontal-medium">
 				<template lwc:if={displayFileUpload}>
 					<c-file-uploader
+						max-size={maxSize}
 						formats={fileUploadFormats}
 						onfilesupload={handleFilesUpload}
 					></c-file-uploader>
