@@ -1,4 +1,6 @@
 public with sharing class CsvImportController {
+	private static CsvImportService service = new CsvImportService();
+
 	@AuraEnabled(cacheable=true)
 	public static List<String> getSObjectList() {
 		try {
@@ -32,6 +34,17 @@ public with sharing class CsvImportController {
 			}
 
 			return fieldsApiNames;
+		} catch (Exception e) {
+			throw new AuraHandledException(e.getMessage());
+		}
+	}
+
+	@AuraEnabled
+	public static void importRecords(Map<String, String> mapping, String encodedCsv, String objectName){
+		try {
+			String decodedCsv = EncodingUtil.base64Decode(encodedCsv).toString();
+
+			service.importRecords(mapping, decodedCsv, objectName);
 		} catch (Exception e) {
 			throw new AuraHandledException(e.getMessage());
 		}

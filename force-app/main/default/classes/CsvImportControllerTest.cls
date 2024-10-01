@@ -27,4 +27,25 @@ private class CsvImportControllerTest {
 			Assert.areEqual(fields.size(), resultFields.size());
 		}
 	}
+	@isTest
+	static void testImportRecords() {
+		String csvData = 'name,desc\nTest,Qwerty';
+
+		Blob encodedCsv = Blob.valueOf(csvData);
+		String encodedBase64Csv = EncodingUtil.base64Encode(encodedCsv);
+
+		Test.startTest();
+
+		CsvImportController.importRecords(
+			new Map<String, String>{ 'name' => 'Name', 'desc' => 'Description' },
+			encodedBase64Csv,
+			'Account'
+		);
+
+		Test.stopTest();
+
+		Integer accountCount = [SELECT COUNT() FROM Account];
+
+		System.assertEquals(1, accountCount, 'Account record should be imported');
+	}
 }
